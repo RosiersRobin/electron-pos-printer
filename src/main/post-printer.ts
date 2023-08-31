@@ -71,6 +71,7 @@ export class PosPrinter {
             let mainWindow = new BrowserWindow({
                 ...parsePaperSize(options.pageSize),
                 show: !!options.preview,
+                autoHideMenuBar: true,
                 webPreferences: {
                     nodeIntegration: true,        // For electron >= 4.0.0
                     contextIsolation: false
