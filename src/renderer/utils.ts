@@ -1,17 +1,19 @@
 import fs from "fs";
 import path from "path";
 import {PrintDataStyle} from "../main/models";
+
 const QRCode = require('qrcode');
 
 
 type PageElement = HTMLElement | HTMLDivElement | HTMLImageElement;
+
 /**
  * @function
  * @name generatePageText
  * @param arg {pass argument of type PosPrintData}
  * @description used for type text, used to generate type text
  * */
-export function generatePageText(arg) {
+export function generatePageText(arg: any) {
     const text = arg.value;
     let div = document.createElement('div') as HTMLElement;
     div.innerHTML = text;
@@ -19,6 +21,7 @@ export function generatePageText(arg) {
 
     return div;
 }
+
 /**
  * @function
  * @name generateTableCell
@@ -26,31 +29,48 @@ export function generatePageText(arg) {
  * @param type {string}
  * @description used for type text, used to generate type text
  * */
-export function generateTableCell(arg, type = 'td'): HTMLElement {
+export function generateTableCell(arg: any, type: string = 'td'): HTMLElement {
     const text = arg.value;
 
     let cellElement: HTMLElement;
 
     cellElement = document.createElement(type);
-    cellElement.innerHTML  = text
-    cellElement = applyElementStyles(cellElement, { padding: '7px 2px', ...arg.style })
+    cellElement.innerHTML = text
+    cellElement = applyElementStyles(cellElement, {padding: '7px 2px', ...arg.style})
 
     return cellElement;
 }
+
 /**
  * @function
  * @name renderImageToPage
  * @param arg {pass argument of type PosPrintData}
  * @description get image from path and return it as a html img
  * */
-export function renderImageToPage(arg): Promise<HTMLElement> {
+export function renderImageToPage(arg: any): Promise<HTMLElement> {
     return new Promise(async (resolve, reject) => {
         // Check if string is a valid base64, if yes, send the file url directly
-        let uri;
-        let img_con = document.createElement('div');
+        let uri: string,
+            img_con: HTMLDivElement = document.createElement('div');
 
-        const image_format = ['apng', 'bmp', 'gif', 'ico', 'cur', 'jpeg', 'jpg', 'jpeg', 'jfif', 'pjpeg',
-            'pjp', 'png', 'svg', 'tif', 'tiff', 'webp'];
+        const image_format: string[] = [
+            'apng',
+            'bmp',
+            'gif',
+            'ico',
+            'cur',
+            'jpeg',
+            'jpg',
+            'jpeg',
+            'jfif',
+            'pjpeg',
+            'pjp',
+            'png',
+            'svg',
+            'tif',
+            'tiff',
+            'webp',
+        ];
 
         img_con = applyElementStyles(img_con, {
             width: '100%',
@@ -70,9 +90,11 @@ export function renderImageToPage(arg): Promise<HTMLElement> {
                 const data = fs.readFileSync(arg.path);
                 let ext = path.extname(arg.path).slice(1);
                 if (image_format.indexOf(ext) === -1) {
-                    reject(new Error(ext +' file type not supported, consider the types: ' + image_format.join()));
+                    reject(new Error(ext + ' file type not supported, consider the types: ' + image_format.join()));
                 }
-                if (ext === 'svg') { ext = 'svg+xml'; }
+                if (ext === 'svg') {
+                    ext = 'svg+xml';
+                }
                 // insert image
                 uri = 'data:image/' + ext + ';base64,' + data.toString('base64');
             } catch (e) {
@@ -88,6 +110,7 @@ export function renderImageToPage(arg): Promise<HTMLElement> {
             ...arg.style
         }) as HTMLImageElement;
 
+        // @ts-ignore
         img.src = uri;
 
         // appending
@@ -102,7 +125,7 @@ export function renderImageToPage(arg): Promise<HTMLElement> {
  * @param str {string}
  * @description Checks if a string is a base64 string
  * */
-export function isBase64(str) {
+export function isBase64(str: string) {
     return Buffer.from(str, 'base64').toString('base64') === str;
 }
 
@@ -149,7 +172,7 @@ export function isValidHttpUrl(url: string) {
  * @param options {object}
  * @description Generate QR in page
  * */
-export function generateQRCode(elementId: string, { value, height = 15, width = 1}) {
+export function generateQRCode(elementId: string, {value, height = 15, width = 1}) {
     return new Promise((resolve, reject) => {
         const element = document.getElementById(elementId) as HTMLCanvasElement,
             options = {

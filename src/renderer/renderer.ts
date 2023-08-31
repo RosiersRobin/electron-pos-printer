@@ -15,7 +15,7 @@ const body = document.getElementById('main') as HTMLElement;
 /**
  * Initialize container in html view, by setting the width and margins specified in the PosPrinter options
  */
-ipcRender.on('body-init', function (event, arg) {
+ipcRender.on('body-init', function (event: any, arg: any) {
     body.style.width = arg?.width || '100%';
     body.style.margin = arg?.margin ||  0;
 
@@ -33,7 +33,7 @@ ipcRender.on('render-line', renderDataToHTML);
  * @param arg {pass argument of type PosPrintData}
  * @description Render data as HTML to page
  * */
-async function renderDataToHTML(event, arg) {
+async function renderDataToHTML(event: any, arg: any) {
     switch (arg.line.type) {
         case 'text':
             try {
